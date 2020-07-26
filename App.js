@@ -38,10 +38,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import HomeScreen from './views/HomeScreen';
 import JobScreen from './views/JobScreen';
 import PendingScreen from './views/PendingScreen';
+import TestScreen from './views/TestScreen.js'
 import ProfileScreen from './views/ProfileScreen';
 import SettingsScreen from './views/SettingsScreen';
 import LaunchScreen from './views/LaunchScreen.js';
 import LoginScreen from './views/Login/LoginScreen.js'
+import SetLocationScreen from './views/Login/SetLocationScreen.js'
+import PhoneNumberScreen from './views/Login/PhoneNumberScreen.js'
 import CustomDrawer from './components/DrawerContent.js'
 
 
@@ -58,19 +61,18 @@ const styles = {
   }
 };
 
-
-const iconSize = 40;
-
 const Drawer = createDrawerNavigator()
-const Stack  = createStackNavigator()
 
 export default function App() {
   return(
     <>
   <NavigationContainer>
     <Drawer.Navigator initialRouteName='Launch' drawerStyle={styles.drawerStyler} drawerContent={props => <CustomDrawer {...props} />}>
+    <Drawer.Screen component={TestScreen} options={{swipeEnabled: false}} name='Test'></Drawer.Screen>
       <Drawer.Screen component={LaunchScreen} options={{swipeEnabled: false}} name='Launch'></Drawer.Screen>
       <Drawer.Screen component={LoginScreen} options={{swipeEnabled: false}} name='Login'></Drawer.Screen>
+      <Drawer.Screen component={SetLocationScreen} options={{swipeEnabled: false}} name='Location'></Drawer.Screen>
+      <Drawer.Screen component={PhoneNumberScreen} options={{swipeEnabled: false}} name='Phone'></Drawer.Screen>
       <Drawer.Screen component={HomeScreen} name='Home'></Drawer.Screen>
       <Drawer.Screen component={JobScreen} name='Job'></Drawer.Screen>
       <Drawer.Screen component={PendingScreen} name='Pending'></Drawer.Screen>

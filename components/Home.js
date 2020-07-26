@@ -13,11 +13,9 @@ export default class Home extends React.Component {
     render() {
         const {onPress} = this.props
         return(
-            <View style={styles.homeMenu}>
-                <TouchableOpacity onPress={onPress}>
+            <TouchableOpacity style={styles.homeMenu} onPress={onPress}>
                 <Icon name={'ios-home'} size={32}></Icon>
-                </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
         )
     }
 }

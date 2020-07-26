@@ -13,7 +13,29 @@ import fonts from '../sources/fonts.js';
 import Continue from '../components/Continue.js';
 import CustomTextInput from '../components/CustomTextinput.js';
 
+import firebase from 'firebase';
+import initializeDatabase from '../database/FirebaseDatabase.js'
+
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
 export default class LaunchScreen extends React.Component {
+    componentDidMount() {
+        initializeDatabase()
+        
+    }
+
+    checkUser() {
+        firebase.auth().onAuthStateChanged((user) => {
+            if(user) {
+                this.props.navigation.navigate('Home')
+            }
+
+            else {
+                this.props.navigation.navigate('Login')
+            }
+        })
+    }
+
     render(){
         return(
             <View style={styles.container}>
@@ -21,7 +43,7 @@ export default class LaunchScreen extends React.Component {
                     <Text style={styles.title}>Jobbify</Text>
                     <Text style={styles.subTitle}>Thank you for using Jobbify!</Text>
                 </View>
-                <Continue onPress={() => this.props.navigation.navigate('Login')}></Continue>
+                <Continue onPress={() => this.checkUser()}></Continue>
             </View>
         )
     }
@@ -42,7 +64,7 @@ const styles  = StyleSheet.create({
     },
 
     title: {
-        fontSize: 80,
+        fontSize: 60,
         color: colors.white
     },
 

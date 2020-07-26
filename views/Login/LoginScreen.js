@@ -5,22 +5,44 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Button
+    Button,
+    Alert
 } from 'react-native';
 
-import GoogleSignIn from 'react-native-google-signin';
-import { LoginButton } from 'react-native-fbsdk';
 
 import colors from '../../sources/colors.js';
 import fonts from '../../sources/fonts.js';
 import Continue from '../../components/Continue.js';
 import CustomTextInput from '../../components/CustomTextinput.js';
 
-import GoogleLogin from '../../components/GoogleLogin.js'
-import FBLoginButton from '../../components/FBLoginButton.js'
-
+import firebase from 'firebase'
+import GoogleLogin from '../../components/GoogleLogin.js';
+import FBLoginButton from '../../components/FBLoginButton.js';
+import initializeDatabase from '../../database/FirebaseDatabase.js'
 
 export default class LoginScreen extends React.Component {
+    state = {
+        username: ''
+    }
+
+    componentDidMount() {
+        initializeDatabase();
+        firebase.auth().onAuthStateChanged((user) => {
+            this.setState({userName: user.displayName}) ,
+            this.setState({userPicture: user.photoURL})
+        })    
+    }
+
+    validateUser() {
+        if(this.state.username == '') {
+            Alert.alert('Login', 'Please login first')
+        }
+
+        else {
+            this.props.navigation.navigate('Phone')
+        }
+    }
+    
     render() {
         return(
             <View style={styles.container}>
@@ -32,9 +54,9 @@ export default class LoginScreen extends React.Component {
                     <GoogleLogin></GoogleLogin>
                 </View>
                 <View style={styles.loginOptionContainer}>
-                <FBLoginButton/>
+                    <FBLoginButton></FBLoginButton>
                 </View>
-                <Continue onPress={() => this.props.navigation.navigate('Home')}></Continue>
+                <Continue onPress={() => this.validateUser()}></Continue>
             </View>
         )
     }
@@ -56,7 +78,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 80,
+        fontSize: 60,
         color: colors.white
     },
 

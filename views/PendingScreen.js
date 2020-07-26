@@ -11,11 +11,13 @@ import {
     TouchableOpacity
   } from 'react-native';
 
-import colors from '../sources/colors.js';
+
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
 
+import colors from '../sources/colors.js';
 import Icon from 'react-native-vector-icons/Ionicons'
+
 
 
   const Pending = props => (
@@ -60,6 +62,7 @@ export default class PendingScreen extends React.Component {
           <Pending></Pending>
             )}
         </ScrollView>
+        <Button title={'Test'} onPress={() => {this.props.navigation.navigate('Test')}}></Button>
       </>
     )
   }

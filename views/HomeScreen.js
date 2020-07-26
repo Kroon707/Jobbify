@@ -11,7 +11,9 @@ import {
     Dimensions,
     TextInput,
     TouchableOpacity,
-    Settings
+    Settings,
+    TouchableHighlight,
+    Modal
   } from 'react-native';
 
 import colors from '../sources/colors.js';
@@ -20,11 +22,13 @@ import borderRadius from '../sources/borderRadius.js'
 import Dropdown from '../components/Dropdown.js'
 import SettingsChild from '../components/SettingsChild.js'
 
-import MapView, {PROVIDER_GOOGLE, Marker, Circle} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker, Circle, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import firebase from 'firebase'
+import initializeDatabase from '../database/FirebaseDatabase.js';
 
 const {width, height} = Dimensions.get('window')
 const SCREEN_WIDTH = width;
@@ -35,22 +39,41 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export default class HomeScreen extends React.Component {
   state = {
+    longitude: 0,
+    latitude: 0,
     location: null,
+    date: '',
     visibleModal: false,
     initialPosition: {
       latitude: 0,
       longitude: 0,
-      longitudeDelta: 0,
-      latitudeDelta: 0,
+      latitudeDelta: 2,
+      longitudeDelta: 2
     },
-
+    jobs: {},
     watchPosition: {
       latitude: 0,
       longitude: 0,
     }
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    initializeDatabase();
+    
+    await firebase.database().ref('/jobs/-MDASDggHNR301jY4coR/longitude').once('value', (data) => {
+      this.setState({longitude: data.val()})
+    });
+
+    await firebase.database().ref('/jobs/-MDASDggHNR301jY4coR/latitude').once('value', (data) => {
+      this.setState({latitude: data.val()})
+    });
+  }
+
+    /*
+
+
+
+
     Geolocation.getCurrentPosition((position) => {
       let lat = parseFloat(position.coords.latitude);
       let long = parseFloat(position.coords.longitude);
@@ -58,8 +81,6 @@ export default class HomeScreen extends React.Component {
       var initialRegion = {
         latitude: lat,
         longitude: long,
-        longitudeDelta: LONGITUDE_DELTA,
-        latitudeDelta: LATITUDE_DELTA
       }
 
       this.setState({initialPosition: initialRegion})
@@ -80,23 +101,27 @@ export default class HomeScreen extends React.Component {
       this.setState({watchPosition: watchRegion})
     })
   }
+  */
 
   render() {
   return (
     <>
-    <Dropdown onPress={() => this.props.navigation.openDrawer()}></Dropdown>
+    <Dropdown onPress={() => {this.props.navigation.openDrawer()}}></Dropdown>
     <MapView 
       style={styles.container}
       region={this.state.initialPosition}
+      provider={PROVIDER_GOOGLE}
+      showsUserLocation={true}
     >
-     <Marker coordinate={this.state.watchPosition}/>
-     <Circle center={this.state.watchPosition} radius={20000} strokeColor={'rgba(90, 210, 255, 0.1)'} fillColor={'rgba(158, 210, 255, 0.3)'}></Circle>
+    <MapView.Marker coordinate={{latitude: this.state.latitude, longitude: this.state.longitude}}>
+
+    </MapView.Marker>
     </MapView>
     <View style={styles.bottomContainer}>
       <Image style={styles.image} source={require('../assets/images/jobSearch.jpg')}></Image>
-      <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.setDatabase()}}>
         <Text style={styles.buttonPlaceholder}>START LOOKING FOR JOBS NEAR YOU</Text>
-      </View>
+      </TouchableOpacity>
     </View>
     </>
   )
@@ -105,6 +130,7 @@ export default class HomeScreen extends React.Component {
 
 
 /*
+<Circle center={this.state.watchPosition} radius={2000} strokeColor={'rgba(90, 210, 255, 0.1)'} fillColor={'rgba(158, 210, 255, 0.3)'}></Circle>
 {this.state.visible = true ?
 <View style={styles.popUpContainer}>
   <View style={styles.popUpRectangle}>
@@ -133,6 +159,13 @@ const styles =  StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center'
+  },
+
+  jobContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 15,
   },
 
   popUpContainer: {

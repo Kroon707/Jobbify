@@ -1,70 +1,89 @@
 import React from 'react';
+
 import { 
-  View, StyleSheet, Text 
+  View, 
+  StyleSheet, 
+  Text 
 } from 'react-native';
+
 import { LoginManager, AccessToken, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
 
 import Icon from 'react-native-vector-icons/Ionicons'
 
-import auth from 'firebase/auth'
-
-import Facebook from 'expo-facebook'
+import firebase from 'firebase'
 
 import colors from '../sources/colors.js'
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+
+var userName = null
 
 export default class FBLoginButton extends React.Component {
-  async logIn() {
-    try {
-      await Facebook.initializeAsync('879240735904395');
-      const {
-        type,
-        token,
-        expires,
-        permissions,
-        declinedPermissions,
-      } = await Facebook.logInWithReadPermissionsAsync({
-        permissions: ['public_profile'],
-      });
-      if (type === 'success') {
-        // Get the user's name using Facebook's Graph API
-        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-        Alert.alert('Logged in!', `Hi ${(await response.json()).name}!`);
-      } else {
-        // type === 'cancel'
-      }
-    } catch ({ message }) {
-      alert(`Facebook Login Error: ${message}`);
-    }
+  state = {
+    user: ''
   }
-|}
+
+  _fbauth() {    
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(function(result) {
+        if(result.isCancelled) {
+          alert('Login Cancelled');
+        } else {
+          AccessToken.getCurrentAccessToken().then((accessTokenData) => {
+            const credential = firebase.auth.FacebookAuthProvider.credential(accessTokenData.accessToken)
+            firebase.auth().signInWithCredential(credential).then(() =>
+            {
+              firebase.auth().onAuthStateChanged((user) => {
+                userName = user.displayName
+                alert(userName)
+              })
+            }),
+            
+            (error) => {
+              console.log('An error occurred' + error)
+            }
+          })
+        }
+      },
+        function(error) {
+          alert('An error occured' + error)
+        }
+    )
+  }
+  
   render() {
-    return (
-      <View style={styles.FBLogin}>
-      <TouchableOpacity style={{flex: 1}} onPress={this.onFacebookButtonPress}>
-        <Icon style={styles.icon} name={'logo-facebook'} size={30}></Icon>
-        <Text>Sign in with Facebook</Text>
-      </TouchableOpacity>
-        <Text>{this.facebookCredential}</Text>
-      </View>
-    );
+      return(
+          <TouchableOpacity style={styles.fbLogin} onPress={() => this._fbauth()}>
+            <Icon style={styles.icon} name={'logo-facebook'} size={30}></Icon>
+            <Text style={styles.loginText}>Login with Facebook</Text>
+          </TouchableOpacity>
+      )
   }
-};
+}
+
+module.exports = FBLoginButton
 
 const styles = StyleSheet.create({
-    FBLogin: {
-        backgroundColor: '#3b5998',
-        borderRadius: 2,
-        color: colors.white,
-        width: '90%',
-        height: '45%',
-        alignItems: 'center',
-        flexDirection: 'row'
-    },
+  fbLogin: {
+    borderRadius: 2,
+    backgroundColor: colors.white,
+    width: 350,
+    height: '45%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: colors.placeholderBorderColor
+  },
 
-    icon: {
-      marginLeft: 20,
-      color: colors.white
-    }
+  icon: {
+    marginLeft: 20,
+    color: '#3b5998'
+  },
+
+  loginText: {
+    color: colors.subTitleColor,
+    marginLeft: 10,
+    fontSize: 16,
+    fontFamily: 'Helvetica-bold'
+  }
 })
-module.exports = FBLoginButton;
+

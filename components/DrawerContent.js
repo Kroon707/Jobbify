@@ -9,7 +9,8 @@ import {
     StatusBar,
     Button,
     TouchableOpacity,
-    TouchableHighlight
+    TouchableHighlight,
+    Image
   } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -23,61 +24,72 @@ import SettingsScreen from '../views/SettingsScreen';
 import colors from '../sources/colors.js';
 import defaultFont from '../sources/fonts.js'
 
+import firebase from 'firebase';
+import initializeDatabase from '../database/FirebaseDatabase.js'
+
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
+const DEFAULT_NAME = 'Default'
+
 class CustomDrawer extends React.Component {
+
+    state = {
+        userName: DEFAULT_NAME,
+        userPicture: '',
+    }
+
     render() {
-    return(
-        <>
-        <TouchableOpacity style={styles.topContainer} onPress={() => this.props.navigation.navigate('Profile')}>
-            <View style={styles.profilePicture}><Icon name={'md-add'} size={45} color={colors.white}></Icon></View>
-            <View>
-            <Text style={{color: '#ffffff', fontSize: 20, marginLeft: 20}}>Bananensplit4000</Text>
-            <Text style={{color: '#c2c2c2', marginLeft: 20}}>$460,61</Text>
+        return(
+            <>
+            <TouchableOpacity style={styles.topContainer} onPress={() => this.props.navigation.navigate('Profile')}>
+                <Image style={styles.profilePicture} source={require('../assets/images/aaa.jpeg')}></Image>
+                <View>
+        <Text style={{color: '#ffffff', fontSize: 20, marginLeft: 20}}>Lennart</Text>
+                    <Text style={{color: '#c2c2c2', marginLeft: 20}}>$460,61</Text>
+                </View>
+            </TouchableOpacity>
+            <View style={styles.midContainer}>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Home')}>
+                <Icon name={'ios-home'} size={35}></Icon>
+                <Text style={styles.textRouting}>Home</Text>
+                </TouchableOpacity>
+                <View style={styles.line}></View>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Job')}>
+                <Icon name={'ios-briefcase'} size={35}></Icon>
+                <Text style={styles.textRouting}>Create a job</Text>
+                </TouchableOpacity>
+                <View style={styles.line}></View>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Pending')}>
+                <Icon name={'ios-list'} size={35}></Icon>
+                <Text style={styles.textRouting}>View your current jobs</Text>
+                </TouchableOpacity>
+                <View style={styles.line}></View>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Profile')}>
+                <Icon name={'ios-chatboxes'} size={35}></Icon>
+                <Text style={styles.textRouting}>Chat</Text>
+                </TouchableOpacity>
             </View>
-        </TouchableOpacity>
-        <View style={styles.midContainer}>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Home')}>
-            <Icon name={'ios-home'} size={35}></Icon>
-            <Text style={styles.textRouting}>Home</Text>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Job')}>
-            <Icon name={'ios-briefcase'} size={35}></Icon>
-            <Text style={styles.textRouting}>Create a job</Text>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Pending')}>
-            <Icon name={'ios-list'} size={35}></Icon>
-            <Text style={styles.textRouting}>View your current jobs</Text>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Profile')}>
-            <Icon name={'ios-chatboxes'} size={35}></Icon>
-            <Text style={styles.textRouting}>Chat</Text>
-            </TouchableOpacity>
-        </View>
-        <View style={styles.bottomContainer}>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Settings')}>
-                <Icon name={'ios-settings'} size={35}></Icon>
-                <Text style={styles.textRouting}>Settings</Text>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            <TouchableOpacity style={styles.router}>
-                <Icon name={'ios-information-circle-outline'} size={35}></Icon>
-                <Text style={styles.textRouting}>Support</Text>
-            </TouchableOpacity>
-            <View style={styles.line}></View>
-            <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Launch')}>
-                <Icon name={'md-arrow-forward'} size={35}></Icon>
-                <Text style={styles.textRouting}>Logout</Text>
-            </TouchableOpacity>
-        </View>
-        </>
-    )
+            <View style={styles.bottomContainer}>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Settings')}>
+                    <Icon name={'ios-settings'} size={35}></Icon>
+                    <Text style={styles.textRouting}>Settings</Text>
+                </TouchableOpacity>
+                <View style={styles.line}></View>
+                <TouchableOpacity style={styles.router}>
+                    <Icon name={'ios-information-circle-outline'} size={35}></Icon>
+                    <Text style={styles.textRouting}>Support</Text>
+                </TouchableOpacity>
+                <View style={styles.line}></View>
+                <TouchableOpacity style={styles.router} onPress={() => {this.props.navigation.navigate('Launch'); firebase.auth().signOut()}}>
+                    <Icon name={'md-arrow-forward'} size={35}></Icon>
+                    <Text style={styles.textRouting}>Logout</Text>
+                </TouchableOpacity>
+            </View>
+            </>
+        )
     }
 }
 
@@ -107,8 +119,6 @@ const styles = StyleSheet.create({
         width: '100%'
     },
 
-
-
     line: {
         width: '90%',
         height: 1,
@@ -122,7 +132,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         backgroundColor: colors.defaultProfileImageColor,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: colors.white
     },
 
     router: {

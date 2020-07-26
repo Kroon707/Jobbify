@@ -14,10 +14,15 @@ import Select2 from 'react-native-select-two';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import firebase from 'firebase'
+
+import Geolocation from '@react-native-community/geolocation';
+
 import colors from '../sources/colors.js';
 import padding from '../sources/padding.js';
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
+import { number } from 'prop-types';
 
 const mockData = [
     { id: 1, name: 'Landmowing' },
@@ -33,16 +38,43 @@ const mockData = [
     state = {
       type: '',
       title: '',
-      price: '',
+      price: 0,
       details: '',
+      latitude: 0,
+      longitude: 0,
     }
+
+    componentDidMount() {
+      Geolocation.getCurrentPosition((position) => {
+          this.setState({latitude: position.coords.latitude})
+          this.setState({longitude: position.coords.longitude})
+      })
+    }
+
+    setJob() {
+      const newJob =
+      firebase.database()
+      .ref('jobs')
+      .push();
+    
+      newJob
+        .set({
+          type: this.state.type,
+          title: this.state.title,
+          price: this.state.price,
+          details: this.state.details,
+          latitude: this.state.latitude,
+          longitude: this.state.longitude
+        })
+        .then(() => console.log('Data updated.'));
+    }
+
     render() {
       return (
         <View style={styles.container}>
           <Dropdown onPress={() => this.props.navigation.openDrawer()}></Dropdown>
           <Home onPress={() => this.props.navigation.navigate('Home')}></Home>
           <Text style={{fontSize: 32, marginTop: 120,}}>Create a Job</Text>
-          <TextInput style={styles.jobTitle} placeholder="Enter the title for your job" color={colors.black} placeholderTextColor={colors.placeholderColor} onSubmitEditing={() => { this.secondTextInput.focus(); }} returnKeyType={"next"} maxLength={30}></TextInput>
           <View style={styles.modalContainer}>
                 <Select2
                     isSelectSingle
@@ -65,10 +97,22 @@ const mockData = [
                     }} 
                 />
           </View>
-          <TextInput ref={(input) => { this.secondTextInput = input; }} returnKeyType={"next"} style={styles.jobTitle} placeholder="Select your price" color={colors.black}  placeholderTextColor={colors.placeholderColor} maxLength={30} onSubmitEditing={() => { this.thirdTextInput.focus(); }} returnKeyType={"next"}></TextInput>
-          <TextInput ref={(input) => { this.thirdTextInput = input; }} returnKeyType={"done"} style={styles.jobDetails} placeholder="Enter details" color={colors.black} placeholderTextColor={colors.placeholderColor} multiline={true} maxLength={300}></TextInput>
-          <TouchableOpacity style={styles.buttonContainer}> 
-          <Button color='#ffffff' style={styles.button} title="Confirm"></Button>
+          <TextInput  ref={(input) => { this.secondTextInput = input; }} returnKeyType={"next"} 
+                      style={styles.jobTitle} placeholder="Select your price" color={colors.black}  
+                      placeholderTextColor={colors.placeholderColor} maxLength={30} 
+                      onSubmitEditing={() => { this.thirdTextInput.focus(); }} 
+                      returnKeyType={"next"}  keyboardType={'number-pad'}
+                      onChangeText={(text) => {this.setState({price: text})}}>
+          </TextInput>
+          <TextInput  ref={(input) => { this.thirdTextInput = input; }} 
+                      returnKeyType={"done"} style={styles.jobDetails} 
+                      placeholder="Enter details" color={colors.black} 
+                      placeholderTextColor={colors.placeholderColor} 
+                      multiline={true} maxLength={300}
+                      onChangeText={(text) => {this.setState({details: text})}}>
+          </TextInput>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.setJob()}}> 
+              <Text style={{color: colors.white}}>Confirm</Text>
           </TouchableOpacity>
         </View>
         )
@@ -93,15 +137,15 @@ const mockData = [
       width: itemWidth,
       height: 45,
       marginTop: 20,
-      borderRadius: 5,
+      borderRadius: 2,
       paddingLeft: padding.textinputPadding,
     },
 
     jobDetails: {
       backgroundColor: colors.white,
       width: itemWidth,
-      height: 300,
-      borderRadius: 5,
+      height: '40%',
+      borderRadius: 2,
       marginTop: 20,
       paddingLeft: padding.textinputPadding,
       paddingRight: padding.textinputPadding,
@@ -116,8 +160,8 @@ const mockData = [
       backgroundColor: colors.buttonBackgroundColor,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 20,
-      borderRadius: 15,
+      marginTop: -100,
+      borderRadius: 2,
       marginBottom: 250,
     },
 

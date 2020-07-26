@@ -15,6 +15,8 @@
 #import <FBSDKSettings.h>
 
 #import <Firebase.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
 
 
 static void InitializeFlipper(UIApplication *application) {
@@ -26,7 +28,10 @@ static void InitializeFlipper(UIApplication *application) {
   [client addPlugin:[[FlipperKitNetworkPlugin alloc] initWithNetworkAdapter:[SKIOSNetworkAdapter new]]];
   [client start];
 }
+
 #endif
+
+
 
 #import <GoogleMaps/GoogleMaps.h>
 
@@ -34,9 +39,9 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [FBSDKSettings setAppID:@"879240735904395"];
+  // Add any custom logic here
   [GMSServices provideAPIKey:@"AIzaSyDEHFWC0_5ixGcUfUzZy3ZaK2RfWeE30Ts"];
-  [FIRApp configure];
+  
 #if DEBUG
   InitializeFlipper(application);
 #endif
@@ -56,6 +61,7 @@ static void InitializeFlipper(UIApplication *application) {
   return YES;
 }
 
+
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
@@ -69,10 +75,6 @@ static void InitializeFlipper(UIApplication *application) {
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-  if ([[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options]) {
-    return YES;
-  }
-
   return NO;
 }
 

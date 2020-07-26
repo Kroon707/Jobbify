@@ -19,13 +19,26 @@ import SettingsChild from '../components/SettingsChild.js'
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
 
+import firebase from 'firebase';
+
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filePath: {},
+      filePath: '',
     };
   }
+
+  /*
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+            this.setState({userName: user.displayName}) ,
+            this.setState({userPicture: user.photoURL})
+        }
+    )
+  }
+  */
+
   chooseFile = () => {
     var options = {
       storageOptions: {
@@ -44,10 +57,11 @@ export default class ProfileScreen extends React.Component {
 
       } else {
         let source = response;
+        alert(source)
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
         this.setState({
-          filePath: source,
+          filePath: source.uri,
         });
       }
     });
@@ -59,11 +73,10 @@ export default class ProfileScreen extends React.Component {
         <Home onPress={() => this.props.navigation.navigate('Home')}></Home>
         <View style={styles.topContainer}>
           <TouchableOpacity onPress={this.chooseFile.bind(this)}>
-          <View style={styles.profileImage}>
-            <Icon name={'md-add'} size={60} color='#ffffff'></Icon>
-          </View>
+            <Image style={styles.profilePicture} source={{uri: this.state.filePath}}></Image>
+            <View style={styles.addProfilePicture}><Icon style={{color: 'white'}} name={'md-add'} size={22}></Icon></View>
           </TouchableOpacity>
-          <Text style={styles.profileName}>Bananensplit</Text>
+          <Text style={styles.profileName}>Lennart</Text>
           <View style={styles.line}></View>
           <View style={styles.profileDetailsContainer}>
             <View style={styles.profileDetails}>
@@ -125,14 +138,24 @@ const styles = StyleSheet.create ({
       fontSize: 18,
     },
 
-    profileImage: { 
+    profilePicture: { 
       width: 150,
       height: 150,
       borderRadius: 75,
       backgroundColor: '#dedede',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 40,
+      top: 45,
+      borderWidth: 1,
+      borderColor: colors.white
+    },
+
+    addProfilePicture: {
+      width: 40, 
+      height: 40, 
+      borderRadius: 20, 
+      backgroundColor: '#4287f5', 
+      right: -105, 
+      justifyContent: 'center', 
+      alignItems: 'center'
     },
 
     profileName: {

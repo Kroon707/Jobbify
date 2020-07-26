@@ -21,11 +21,9 @@ export default class Dropdown extends React.Component {
         const {onPress} = this.props;
         return( 
             <>
-                <View style={styles.dropdownMenu} onPress={onPress}>
-                    <TouchableOpacity onPress={onPress}>
+                <TouchableOpacity style={styles.dropdownMenu} onPress={onPress}>
                         <Icon name={'md-menu'} size={32}></Icon>
-                    </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
             </>
         )
     }
