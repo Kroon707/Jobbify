@@ -74,7 +74,7 @@ const mockData = [
         <View style={styles.container}>
           <Dropdown onPress={() => this.props.navigation.openDrawer()}></Dropdown>
           <Home onPress={() => this.props.navigation.navigate('Home')}></Home>
-          <Text style={{fontSize: 32, marginTop: 120,}}>TEST</Text>
+          <Text style={{fontSize: 32, marginTop: 120,}}>Create a job</Text>
           <View style={styles.modalContainer}>
                 <Select2
                     isSelectSingle
