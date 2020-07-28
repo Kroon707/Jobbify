@@ -59,7 +59,20 @@ export default class HomeScreen extends React.Component {
 
   async componentDidMount() {
     initializeDatabase();
-    
+    await firebase.database()
+    .ref('/jobs')
+    .orderByKey()
+    .once('value')
+    .then((snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        this.state.jobs += childSnapshot.child('/details').val()
+      })
+    })
+    alert(this.state.jobs)
+  }
+
+    /*
+
     await firebase.database().ref('/jobs/-MDASDggHNR301jY4coR/longitude').once('value', (data) => {
       this.setState({longitude: data.val()})
     });
@@ -67,11 +80,6 @@ export default class HomeScreen extends React.Component {
     await firebase.database().ref('/jobs/-MDASDggHNR301jY4coR/latitude').once('value', (data) => {
       this.setState({latitude: data.val()})
     });
-  }
-
-    /*
-
-
 
 
     Geolocation.getCurrentPosition((position) => {

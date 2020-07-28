@@ -36,12 +36,14 @@ const mockData = [
    
   class JobScreen extends React.Component {
     state = {
+      jobInfo: {
       type: '',
       title: '',
       price: 0,
       details: '',
       latitude: 0,
-      longitude: 0,
+      longitude: 0
+      }
     }
 
     componentDidMount() {
@@ -59,12 +61,12 @@ const mockData = [
     
       newJob
         .set({
-          type: this.state.type,
-          title: this.state.title,
-          price: this.state.price,
-          details: this.state.details,
-          latitude: this.state.latitude,
-          longitude: this.state.longitude
+          type: this.state.jobInfo.type,
+          title: this.state.jobInfo.title,
+          price: this.state.jobInfo.price,
+          details: this.state.jobInfo.details,
+          latitude: this.state.jobInfo.latitude,
+          longitude: this.state.jobInfo.longitude
         })
         .then(() => console.log('Data updated.'));
     }
