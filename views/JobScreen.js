@@ -23,6 +23,9 @@ import padding from '../sources/padding.js';
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
 import { number } from 'prop-types';
+import { set } from 'react-native-reanimated';
+
+
 
 const mockData = [
     { id: 1, name: 'Landmowing' },
@@ -69,6 +72,20 @@ const mockData = [
         .then(() => console.log('Data updated.'));
     }
 
+    checkTextInput() {
+      if (this.state.price != '') {
+        if (this.state.details != ''){
+          this.setJob()
+        }
+        else {
+          alert('Please Enter Details')
+        }
+      }
+      else {
+        alert('Please Enter Price')
+      }
+    }
+
     render() {
       return (
         <View style={styles.container}>
@@ -111,7 +128,7 @@ const mockData = [
                       multiline={true} maxLength={300}
                       onChangeText={(text) => {this.setState({details: text})}}>
           </TextInput>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.setJob()}}> 
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.checkTextInput()}}> 
               <Text style={{color: colors.white}}>Confirm</Text>
           </TouchableOpacity>
         </View>
@@ -119,6 +136,7 @@ const mockData = [
     }
   }
 
+  
   const itemWidth = 325;
 
   const styles = StyleSheet.create ({
