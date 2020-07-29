@@ -39,12 +39,14 @@ const mockData = [
    
   class JobScreen extends React.Component {
     state = {
+      jobInfo: {
       type: '',
       title: '',
       price: 0,
       details: '',
       latitude: 0,
-      longitude: 0,
+      longitude: 0
+      }
     }
 
     componentDidMount() {
@@ -62,12 +64,12 @@ const mockData = [
     
       newJob
         .set({
-          type: this.state.type,
-          title: this.state.title,
-          price: this.state.price,
-          details: this.state.details,
-          latitude: this.state.latitude,
-          longitude: this.state.longitude
+          type: this.state.jobInfo.type,
+          title: this.state.jobInfo.title,
+          price: this.state.jobInfo.price,
+          details: this.state.jobInfo.details,
+          latitude: this.state.jobInfo.latitude,
+          longitude: this.state.jobInfo.longitude
         })
         .then(() => console.log('Data updated.'));
     }
@@ -91,7 +93,7 @@ const mockData = [
         <View style={styles.container}>
           <Dropdown onPress={() => this.props.navigation.openDrawer()}></Dropdown>
           <Home onPress={() => this.props.navigation.navigate('Home')}></Home>
-          <Text style={{fontSize: 32, marginTop: 120,}}>TEST</Text>
+          <Text style={{fontSize: 32, marginTop: 120,}}>Create a job</Text>
           <View style={styles.modalContainer}>
                 <Select2
                     isSelectSingle
