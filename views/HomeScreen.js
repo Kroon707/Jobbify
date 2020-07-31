@@ -50,12 +50,19 @@ export default class HomeScreen extends React.Component {
       latitudeDelta: 2,
       longitudeDelta: 2
     },
-    jobs: {},
+    jobs: [],
     watchPosition: {
       latitude: 0,
       longitude: 0,
     }
   };
+
+
+  renderMarkers() {
+    return this.state.jobs.map((jobItem) => {
+      <MapView.Marker key={jobItem.key} coordinate={{latitude: jobItem.latitude, longitude: jobItem.longitude}}></MapView.Marker>
+      })
+  }
 
   async componentDidMount() {
     initializeDatabase();
@@ -65,12 +72,17 @@ export default class HomeScreen extends React.Component {
     .once('value')
     .then((snapshot) => {
       snapshot.forEach((childSnapshot) => {
-        this.state.jobs += childSnapshot.child('/details').val()
-      })
+        let jobInfo = { 
+          details: childSnapshot.child('details').val(),
+          title: childSnapshot.child('title').val(),
+          latitude: childSnapshot.child('latitude').val(),
+          longitude: childSnapshot.child('longitude').val(),
+          price: childSnapshot.child('price').val()
+        }
+        this.state.jobs.push(jobInfo)
     })
-    alert(this.state.jobs)
+    })
   }
-
     /*
 
     await firebase.database().ref('/jobs/-MDASDggHNR301jY4coR/longitude').once('value', (data) => {
@@ -117,13 +129,12 @@ export default class HomeScreen extends React.Component {
     <Dropdown onPress={() => {this.props.navigation.openDrawer()}}></Dropdown>
     <MapView 
       style={styles.container}
+      initialRegion={{longitude: this.state.longitude, latitude: this.state.latitude}}
       region={this.state.initialPosition}
       provider={PROVIDER_GOOGLE}
       showsUserLocation={true}
     >
-    <MapView.Marker coordinate={{latitude: this.state.latitude, longitude: this.state.longitude}}>
-
-    </MapView.Marker>
+    {this.renderMarkers()}
     </MapView>
     <View style={styles.bottomContainer}>
       <Image style={styles.image} source={require('../assets/images/jobSearch.jpg')}></Image>
