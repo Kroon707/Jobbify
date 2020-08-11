@@ -20,11 +20,13 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 
 export default class LaunchScreen extends React.Component {
     componentDidMount() {
+        //Initialize firebase database
         initializeDatabase()
         
     }
 
     checkUser() {
+        //Validate user
         firebase.auth().onAuthStateChanged((user) => {
             if(user) {
                 this.props.navigation.navigate('Home')

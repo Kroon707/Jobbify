@@ -50,27 +50,29 @@ export default class HomeScreen extends React.Component {
       latitudeDelta: 2,
       longitudeDelta: 2
     },
+    test: [1, 2, 3, 4, 5],
     jobs: [],
-    watchPosition: {
-      latitude: 0,
-      longitude: 0,
-    }
+    pushing: true,
+    watchLat: 0,
+    watchLong: 0,
   };
 
-
-  renderMarkers() {
-    return this.state.jobs.map((jobItem) => {
-      <MapView.Marker key={jobItem.key} coordinate={{latitude: jobItem.latitude, longitude: jobItem.longitude}}></MapView.Marker>
-      })
-  }
-
-  async componentDidMount() {
+  componentDidMount() {
+    //Initialize firebase database
     initializeDatabase();
-    await firebase.database()
+
+    //Watch user posittion for initial map region
+    Geolocation.watchPosition((position) => {
+      const watchLong = position.coords.longitude
+      const watchLat = position.coords.latitude
+      this.setState({watchLat: watchLat})
+      this.setState({watchLong: watchLong})
+    })
+    // Querying all available jobs
+    firebase.database()
     .ref('/jobs')
     .orderByKey()
-    .once('value')
-    .then((snapshot) => {
+    .on('value', (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         let jobInfo = { 
           details: childSnapshot.child('details').val(),
@@ -80,6 +82,7 @@ export default class HomeScreen extends React.Component {
           price: childSnapshot.child('price').val()
         }
         this.state.jobs.push(jobInfo)
+        this.setState({pushing: false})
     })
     })
   }
@@ -109,32 +112,43 @@ export default class HomeScreen extends React.Component {
     {enableHighAccuracy: true, timeout: 20000, maximumAge:1000}
     )
 
-    Geolocation.watchPosition((position) => {
-      const watchLong = position.coords.longitude
-      const watchLat = position.coords.latitude
-
-      var watchRegion = {
-        latitude: watchLat,
-        longitude: watchLong,
-      }
-
-      this.setState({watchPosition: watchRegion})
-    })
+  
   }
   */
 
   render() {
+  //if(this.state.pushing) {return null}
   return (
-    <>
+    <View style={{flex: 1}}>
     <Dropdown onPress={() => {this.props.navigation.openDrawer()}}></Dropdown>
     <MapView 
       style={styles.container}
-      initialRegion={{longitude: this.state.longitude, latitude: this.state.latitude}}
-      region={this.state.initialPosition}
+      initialRegion={{
+        latitude: this.state.watchLat,
+        longitude: this.state.watchLong,
+        latitudeDelta: 20,
+        longitudeDelta: 20,
+      }}
       provider={PROVIDER_GOOGLE}
       showsUserLocation={true}
     >
-    {this.renderMarkers()}
+    {
+      //Map marker to database jobs
+      this.state.jobs.map(function (jobitem) {
+        return  <Marker coordinate={{latitude: jobitem.latitude, longitude: jobitem.longitude}}>
+                    <Callout>
+                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                          <Icon style={styles.calloutIcon} name={'md-briefcase'} size={50}></Icon>
+                          <View style={{marginLeft: 15}}>
+                          <Text style={styles.calloutTitle}>{jobitem.title}</Text>
+                          <Text style={styles.calloutTimestamp}>18:00:00</Text>
+                          </View>
+                          <Icon style={styles.calloutForwardIcon} name={'ios-arrow-forward'} size={50}></Icon>
+                        </View>
+                    </Callout>
+                </Marker>
+      })
+    }
     </MapView>
     <View style={styles.bottomContainer}>
       <Image style={styles.image} source={require('../assets/images/jobSearch.jpg')}></Image>
@@ -142,7 +156,7 @@ export default class HomeScreen extends React.Component {
         <Text style={styles.buttonPlaceholder}>START LOOKING FOR JOBS NEAR YOU</Text>
       </TouchableOpacity>
     </View>
-    </>
+    </View>
   )
   }
 }
@@ -187,48 +201,6 @@ const styles =  StyleSheet.create({
     marginRight: 15,
   },
 
-  popUpContainer: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center", 
-    zIndex: 2,
-  },
-
-  popUpRectangle: {
-    width: '80%',
-    height: '35%',
-    backgroundColor: colors.globalBackgroundColor,
-    opacity: 1, 
-    borderRadius: 15,
-  },
-
-  closeModal: {
-    position: 'absolute',
-    top: 5,
-    right: 17,
-  },
-
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-
-  modalTextinputs: {
-    backgroundColor: colors.white,
-    width: '90%',
-    height: 45,
-    marginTop: 20,
-    borderRadius: borderRadius.globalborderRadius,
-    paddingLeft: padding.textinputPadding,
-    },
-
   dropdownMenu: {
     width: 60,
     height: 60,
@@ -271,6 +243,24 @@ const styles =  StyleSheet.create({
   image: {
     position: 'absolute',
     top: 10,
+  },
+
+  calloutIcon: {
+    marginLeft: 10
+  },
+
+  calloutTitle: {
+    fontSize: 23,
+  },
+
+  calloutTimestamp: {
+    fontSize: 15,
+    color: '#6e6e6e'
+  },
+
+  calloutForwardIcon: {
+    marginLeft: 30,
+    marginRight: 10
   }
 })
   

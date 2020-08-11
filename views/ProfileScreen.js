@@ -38,7 +38,8 @@ export default class ProfileScreen extends React.Component {
     )
   }
   */
-
+ 
+  //Set's new profile image
   chooseFile = () => {
     var options = {
       storageOptions: {

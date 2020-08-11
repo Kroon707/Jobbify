@@ -22,10 +22,6 @@ import colors from '../sources/colors.js';
 import padding from '../sources/padding.js';
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
-import { number } from 'prop-types';
-import { set } from 'react-native-reanimated';
-
-
 
 const mockData = [
     { id: 1, name: 'Landmowing' },
@@ -39,23 +35,24 @@ const mockData = [
    
   class JobScreen extends React.Component {
     state = {
+      latitude: 0,
+      longitude: 0,
       jobInfo: {
       type: '',
       title: '',
       price: 0,
       details: '',
-      latitude: 0,
-      longitude: 0
       }
     }
 
     componentDidMount() {
+      //Get current position for job location
       Geolocation.getCurrentPosition((position) => {
           this.setState({latitude: position.coords.latitude})
           this.setState({longitude: position.coords.longitude})
       })
     }
-
+    //Creates a job that pushes info into firebase database
     setJob() {
       const newJob =
       firebase.database()
@@ -68,12 +65,13 @@ const mockData = [
           title: this.state.jobInfo.title,
           price: this.state.jobInfo.price,
           details: this.state.jobInfo.details,
-          latitude: this.state.jobInfo.latitude,
-          longitude: this.state.jobInfo.longitude
+          latitude: this.state.latitude,
+          longitude: this.state.longitude
         })
         .then(() => console.log('Data updated.'));
     }
 
+    //Validate job information
     checkTextInput() {
       if (this.state.price != '') {
         if (this.state.details != ''){
