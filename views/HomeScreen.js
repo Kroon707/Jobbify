@@ -26,6 +26,7 @@ import MapView, {PROVIDER_GOOGLE, Marker, Circle, Callout} from 'react-native-ma
 import Geolocation from '@react-native-community/geolocation';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import Emoji from 'react-native-emoji'
 
 import firebase from 'firebase'
 import initializeDatabase from '../database/FirebaseDatabase.js';
@@ -50,7 +51,6 @@ export default class HomeScreen extends React.Component {
       latitudeDelta: 2,
       longitudeDelta: 2
     },
-    test: [1, 2, 3, 4, 5],
     jobs: [],
     pushing: true,
     watchLat: 0,
@@ -184,6 +184,39 @@ title={'JOB'}
 >
   <Icon name='ios-briefcase' size={80}></Icon>
 </MapView.Marker>
+*/
+
+/*
+
+ <View style={{zIndex: 2, width: '100%', height: '100%', backgroundColor: colors.globalBackgroundColor, alignItems: 'center'}}>
+        <View style={{flexDirection: 'row', backgroundColor: '#000000', height: '16%', width: '100%', alignItems: 'center', paddingLeft: 40, paddingTop: 20}}>
+          <Icon name={'md-briefcase'} size={45} style={{color: '#ffffff'}}></Icon>
+          <View style={{marginLeft: 15}}>
+            <Text style={{fontSize: 35, color: '#ffffff'}}>Mowing Grass</Text>
+            <Text style={{color: colors.globalBackgroundColor}}>SkinnyPenis123</Text>
+          </View>
+        </View>
+        <View style={{width: '90%', height: '10%', backgroundColor: '#ffffff', marginTop: 30, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', borderWidth: 1, borderColor: colors.lineColor}}>
+          <Text style={{marginRight: 27}}>Nederland, Wijchen, Bullekamp 20</Text>
+          <View style={{width: 1, height: '60%', backgroundColor: colors.lineColor}}></View>
+          <Emoji name={'flag-nl'} style={{fontSize: 35, marginLeft: 27}}></Emoji>
+        </View>
+        <View style={{width: '90%', height: '10%', backgroundColor: '#ffffff', marginTop: 20, alignItems: 'center', paddingLeft: 30, flexDirection: 'row', borderWidth: 1, borderColor: colors.lineColor}}>
+          <Icon name={'logo-euro'} size={20}></Icon>
+          <Text style={{fontSize: 20, marginLeft: 10}}>15,45</Text>
+        </View>
+        <View style={{width: '90%', height: '40%', backgroundColor: '#ffffff', marginTop: 20, padding: 15, borderWidth: 1, borderColor: colors.lineColor}}>
+          <Text>dwadwadwadwadwdwadwadwadnwadnwanidwaidniwanjhidwahidwaiodhwadiowahdoiwadhwaiodhwaiodhwaodiwahdiowahdwahdiwahdwaiohdiohwaoihdaiodsfbvdsbvbvsdbirniovobdsbodvbfsovbndsvsdihfivohcvoidschdvbfebcxvbcv,cbjvklvfdbjpvbfvbvhoicnjdsklvbdso[vdbvesfbueasdofdabofesbfrsdsbjkbdsvwbebsbuvbdsbvdsvb rbvdsvdsvhfsbinesdhdsvpjdsjvodshdosvphdshsvbfdsabvafdsjvbdasvjabjvdbjvsbdisofhesioFHLDK;hveifhkdchisefhdishk;fhefi;esiohfh;ieshifehs;iofhisvkl;hvisdvlhbdfsbiavhoifshirsigiosbiovdsobidiwaindniwadinowainoda</Text>
+        </View>
+        <View style={{flexDirection: 'row', height: '7%'}}>
+          <TouchableOpacity style={{width: '43%', height: '100%', backgroundColor: '#ffffff', alignItems: 'center', justifyContent: 'center', marginTop: 20, marginRight: '2%', borderRadius: 2, borderWidth: 2, borderColor: '#000000'}}>
+            <Text style={{color: '#000000'}}>CANCEL</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{width: '43%', height: '100%', backgroundColor: '#000000', alignItems: 'center', justifyContent: 'center', marginTop: 20, marginRight: '2%', borderRadius: 2}}>
+            <Text style={{color: '#ffffff'}}>ACCEPT JOB</Text>
+          </TouchableOpacity>
+      </View>
+    </View>
 */
 
 
