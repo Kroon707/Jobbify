@@ -1,0 +1,12 @@
+{
+  "name": "jobbify",
+  "displayName": "jobbify",
+  "expo": {
+    "name": "Jobbify",
+    "version": "1.0.0",
+    "ios": {
+      "bundleIdentifier": "HugoKroon.Jobbify",
+      "buildNumber": "1.0.0"
+    }
+   }
+}
