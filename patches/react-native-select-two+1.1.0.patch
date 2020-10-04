@@ -1,0 +1,178 @@
+diff --git a/node_modules/react-native-select-two/index.js b/node_modules/react-native-select-two/index.js
+index 5c94a58..4ae761a 100644
+--- a/node_modules/react-native-select-two/index.js
++++ b/node_modules/react-native-select-two/index.js
+@@ -7,6 +7,7 @@ import Button from './lib/Button';
+ import TagItem from './lib/TagItem';
+ import utilities from './lib/utilities';
+ import PropTypes from 'prop-types';
++import { Colors } from 'react-native/Libraries/NewAppScreen';
+ 
+ const { height } = Dimensions.get('window');
+ const INIT_HEIGHT = height * 0.6;
+@@ -24,6 +25,7 @@ class Select2 extends Component {
+     }
+     state = {
+         show: false,
++        show1: false,
+         preSelectedItem: [],
+         selectedItem: [],
+         data: [],
+@@ -79,6 +81,15 @@ class Select2 extends Component {
+         });
+         this.setState({ data, show: false, keyword: '', selectedItem: preSelectedItem });
+     }
++    cancelCustomJob = () => {
++        this.setState({ show1: false });
++        this.setState({title: ''});
++    }
++
++    confirmCustomJob = () => {
++        this.setState({ show1: false});
++        this.setState({ show: false });
++    }
+ 
+     onItemSelected = (item, isSelectSingle) => {
+         let selectedItem = [];
+@@ -125,13 +136,15 @@ class Select2 extends Component {
+     closeModal = () => this.setState({ show: false });
+     showModal = () => this.setState({ show: true });
+ 
++    showModal1 = () => this.setState({ show1: true });
++
+     render() {
+         let {
+             style, modalStyle, title, onSelect, onRemoveItem, popupTitle, colorTheme,
+             isSelectSingle, cancelButtonText, selectButtonText, searchPlaceHolderText,
+             selectedTitleStyle, buttonTextStyle, buttonStyle, showSearchBox
+         } = this.props;
+-        let { show, selectedItem, preSelectedItem } = this.state;
++        let { show, show1, selectedItem, preSelectedItem } = this.state;
+         return (
+             <TouchableOpacity
+                 onPress={this.showModal}
+@@ -154,7 +167,9 @@ class Select2 extends Component {
+                                 {popupTitle || title}
+                             </Text>
+                         </View>
++                        
+                         <View style={styles.line} />
++                        <View style={styles.rowContainer}>
+                         {
+                             showSearchBox
+                                 ? <TextInput
+@@ -175,10 +190,49 @@ class Select2 extends Component {
+                                             toValue: INIT_HEIGHT,
+                                             friction: 7
+                                         }).start();
+-                                    }}
++                                    3}}
+                                 />
+-                                : null
++                                
++                            : null
++                            
+                         }
++                        <Button
++                                defaultFont={this.defaultFont}
++                                title='Custom Job'
++                                backgroundColor={colorTheme}
++                                textStyle={buttonTextStyle}
++                                onPress={this.showModal1}
++                                style={[styles.button1, buttonStyle, {borderWidth: 1, borderColor: colorTheme}]}/>
++                        
++                        </View>
++                        <Modal isVisible={show1}>
++                            <View style={styles.customJobModal}>
++                                <Text style={[styles.customJobTitle, this.defaultFont]}>
++                                    Enter your custom job
++                                </Text>
++                                <View style={styles.line} />
++                                <TextInput placeholder= 'Type your job' style={styles.inputKeyword1} onChangeText={(text) => {this.setState({title: text})}}>
++
++                                </TextInput>
++                                <View style={{flexDirection: 'row'}}>
++                                    <Button
++                                    defaultFont={this.defaultFont}
++                                    title='Cancel'
++                                    textColor={colorTheme}
++                                    backgroundColor='#fff'
++                                    textStyle={buttonTextStyle}
++                                    onPress={this.cancelCustomJob}
++                                    style={[styles.customJobButton, buttonStyle, {borderWidth: 1, borderColor: colorTheme, marginRight: 20}]}/>
++                                     <Button
++                                    defaultFont={this.defaultFont}
++                                    title='Confirm'
++                                    backgroundColor={colorTheme}
++                                    textStyle={buttonTextStyle}
++                                    onPress={this.confirmCustomJob}
++                                    style={[styles.customJobButton, buttonStyle, {borderWidth: 1, borderColor: colorTheme}]}/>
++                                </View>
++                            </View>
++                        </Modal>
+                         <FlatList
+                             style={styles.listOption}
+                             data={this.dataRender || []}
+@@ -188,6 +242,7 @@ class Select2 extends Component {
+                         />
+ 
+                         <View style={styles.buttonWrapper}>
++                        
+                             <Button
+                                 defaultFont={this.defaultFont}
+                                 onPress={() => {
+@@ -264,24 +319,51 @@ const styles = StyleSheet.create({
+         flexDirection: 'row', alignItems: 'center', borderWidth: 1,
+         borderColor: '#cacaca', paddingVertical: 4
+     },
++    rowContainer: {
++        flexDirection:'row'
++    },
+     modalContainer: {
+         paddingTop: 16, backgroundColor: '#fff', borderTopLeftRadius: 8, borderTopRightRadius: 8
+     },
++    customJobModal: {
++        backgroundColor:'white',
++        paddingLeft: 22,
++        paddingRight: 22,
++        alignItems: 'center',
++        borderRadius: 4,
++        height: 150
++    },
+     title: {
+         fontSize: 16, marginBottom: 16, width: '100%', textAlign: 'center'
+     },
++    customJobTitle: {
++        fontSize: 18, color: '#919191', marginTop: 6
++    },
+     line: {
+         height: 1, width: '100%', backgroundColor: '#cacaca'
+     },
++    line1: {
++        height: 1, width: '100%', backgroundColor: '#cacaca',
++    },
+     inputKeyword: {
+-        height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
+-        paddingLeft: 8, marginHorizontal: 24, marginTop: 16
++        height: 40, width: 200, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
++        paddingLeft: 8, marginLeft: 24, marginTop: 16
++    },
++    inputKeyword1: {
++        height: 40, width: 230, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
++        paddingLeft: 8, marginTop: 15
+     },
+     buttonWrapper: {
+         marginVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
+     },
+     button: {
+-        height: 36, flex: 1
++        height: 36, flex: 2, color: '#328da8'
++    },
++    button1: {
++        color: '#328da8', marginTop: 16, marginLeft: 15
++    },
++    customJobButton: {
++        marginTop: 20, width: 130
+     },
+     selectedTitlte: {
+         fontSize: 14, color: 'gray', flex: 1
