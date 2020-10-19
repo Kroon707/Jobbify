@@ -27,6 +27,7 @@ import padding from '../sources/padding.js';
 import Dropdown from '../components/Dropdown.js';
 import Home from '../components/Home.js';
 
+import { jobName } from '../node_modules/react-native-select-two/index.js'
 
 const mockData = [
     { id: 1, name: 'Landmowing' },
@@ -43,7 +44,7 @@ const mockData = [
       latitude: 0,
       longitude: 0,
       type: '',
-      title: '',
+      title: jobName,
       price: 0,
       details: '',
     }
@@ -66,7 +67,7 @@ const mockData = [
       newJob
         .set({
           type: this.state.type,
-          title: this.state.title,
+          title: jobName,
           price: this.state.price,
           details: this.state.details,
           latitude: this.state.latitude,
@@ -94,9 +95,14 @@ const mockData = [
     render() {
       return (
         <View style={styles.container}>
-          <Dropdown onPress={() => this.props.navigation.openDrawer()}></Dropdown>
-          <Home onPress={() => this.props.navigation.navigate('Home')}></Home>
-          <Text style={{fontSize: 32, marginTop: 120,}}>Create a job</Text>
+          <View style={{width: '100%', height: '17%', backgroundColor: colors.white, justifyContent: 'center', shadowColor: 'grey', shadowOffset: { width: 0, height: 3}, shadowOpacity: 0.4, shadowRadius: 7, paddingTop: '15%'}}>
+            <View style={{justifyContent: 'center'}}>
+              <Text style={{fontSize: 32,color: colors.black, marginLeft: '10%', fontFamily: 'Helvetica-bold'}}>Create a Job</Text>
+              <TouchableOpacity style={{right: '10%', position: 'absolute'}} onPress={() => {this.props.navigation.navigate('Home')}}>
+              <Icon name={'ios-close'} size={50}></Icon>
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={styles.modalContainer}>
                 <Select2
                     isSelectSingle
@@ -159,22 +165,12 @@ const mockData = [
       alignItems: 'center'
     },
 
-    jobMadeModal: {
-      backgroundColor:'white',
-      paddingLeft: 22,
-      paddingRight: 22,
-      alignItems: 'center',
-      borderRadius: 4,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      height: 150
-    },
-
     jobTitle: {
       backgroundColor: colors.white,
       width: itemWidth,
       height: 45,
       marginTop: 20,
-      borderRadius: 2,
+      borderRadius: 1,
       paddingLeft: padding.textinputPadding,
     },
 
@@ -191,7 +187,6 @@ const mockData = [
 
     buttonContainer: {
       position: 'absolute',
-      top: 700,
       width: itemWidth,
       height: 60,
       backgroundColor: colors.buttonBackgroundColor,
@@ -199,7 +194,7 @@ const mockData = [
       alignItems: 'center',
       marginTop: -100,
       borderRadius: 2,
-      marginBottom: 250,
+      bottom: 50,
     },
 
     button: {

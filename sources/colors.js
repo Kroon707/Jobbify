@@ -1,7 +1,7 @@
 export default {
-    globalBackgroundColor:'#f0f0f0', 
+    globalBackgroundColor:'#f5f5f5', 
     placeholderColor: '#000000',
-    placeholderBorderColor: '#d8d8d8',
+    placeholderBorderColor: '#dbdbdb',
     white: '#ffffff',  
     black: '#000000',
     buttonBackgroundColor: '#000000',

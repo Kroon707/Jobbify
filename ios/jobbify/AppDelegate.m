@@ -42,6 +42,9 @@ static void InitializeFlipper(UIApplication *application) {
   // Add any custom logic here
   [GMSServices provideAPIKey:@"AIzaSyDEHFWC0_5ixGcUfUzZy3ZaK2RfWeE30Ts"];
   
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
+  
 #if DEBUG
   InitializeFlipper(application);
 #endif

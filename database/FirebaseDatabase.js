@@ -5,7 +5,8 @@ function initializeDatabase() {
         apiKey: 'AIzaSyCGZgnNn2ugygmv0pNCkyF4stisqPIONsc',
         authDomain: 'jobbify-273ae.firebaseapp.com',
         projectId: 'jobbify-273ae',
-        databaseURL: 'https://jobbify-273ae.firebaseio.com'
+        databaseURL: 'https://jobbify-273ae.firebaseio.com',
+        storageBucket: "gs://jobbify-273ae.appspot.com/"
     };
 
     !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();

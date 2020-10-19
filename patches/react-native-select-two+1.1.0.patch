@@ -1,8 +1,8 @@
 diff --git a/node_modules/react-native-select-two/index.js b/node_modules/react-native-select-two/index.js
-index 5c94a58..4ae761a 100644
+index 5c94a58..508645e 100644
 --- a/node_modules/react-native-select-two/index.js
 +++ b/node_modules/react-native-select-two/index.js
-@@ -7,6 +7,7 @@ import Button from './lib/Button';
+@@ -7,16 +7,18 @@ import Button from './lib/Button';
  import TagItem from './lib/TagItem';
  import utilities from './lib/utilities';
  import PropTypes from 'prop-types';
@@ -10,7 +10,19 @@ index 5c94a58..4ae761a 100644
  
  const { height } = Dimensions.get('window');
  const INIT_HEIGHT = height * 0.6;
-@@ -24,6 +25,7 @@ class Select2 extends Component {
++let jobName = ''
+ // create a component
+ class Select2 extends Component {
+     static defaultProps = {
+         cancelButtonText: 'Hủy',
+         selectButtonText: 'Chọn',
+         searchPlaceHolderText: "Nhập vào từ khóa",
+-        listEmptyTitle: 'Không tìm thấy lựa chọn phù hợp',
++        listEmptyTitle: 'No Job Found',
+         colorTheme: '#16a45f',
+         buttonTextStyle: {},
+         buttonStyle: {},
+@@ -24,10 +26,12 @@ class Select2 extends Component {
      }
      state = {
          show: false,
@@ -18,22 +30,26 @@ index 5c94a58..4ae761a 100644
          preSelectedItem: [],
          selectedItem: [],
          data: [],
-@@ -79,6 +81,15 @@ class Select2 extends Component {
-         });
+-        keyword: ''
++        keyword: '',
++        showed_job: '',
+     }
+     animatedHeight = new Animated.Value(INIT_HEIGHT);
+ 
+@@ -80,6 +84,13 @@ class Select2 extends Component {
          this.setState({ data, show: false, keyword: '', selectedItem: preSelectedItem });
      }
-+    cancelCustomJob = () => {
-+        this.setState({ show1: false });
-+        this.setState({title: ''});
-+    }
-+
+ 
 +    confirmCustomJob = () => {
 +        this.setState({ show1: false});
 +        this.setState({ show: false });
++        jobName = this.state.showed_job
++        console.log(jobName)
 +    }
- 
++
      onItemSelected = (item, isSelectSingle) => {
          let selectedItem = [];
+         let { data } = this.state;
 @@ -125,13 +136,15 @@ class Select2 extends Component {
      closeModal = () => this.setState({ show: false });
      showModal = () => this.setState({ show: true });
@@ -47,11 +63,25 @@ index 5c94a58..4ae761a 100644
              selectedTitleStyle, buttonTextStyle, buttonStyle, showSearchBox
          } = this.props;
 -        let { show, selectedItem, preSelectedItem } = this.state;
-+        let { show, show1, selectedItem, preSelectedItem } = this.state;
++        let { show, show1, selectedItem, preSelectedItem, showed_job} = this.state;
          return (
              <TouchableOpacity
                  onPress={this.showModal}
-@@ -154,7 +167,9 @@ class Select2 extends Component {
+@@ -141,7 +154,7 @@ class Select2 extends Component {
+                     onBackdropPress={this.closeModal}
+                     style={{
+                         justifyContent: 'flex-end',
+-                        margin: 0
++                        margin: 0,
+                     }}
+                     useNativeDriver={true}
+                     animationInTiming={300}
+@@ -150,11 +163,13 @@ class Select2 extends Component {
+                     isVisible={show}>
+                     <Animated.View style={[styles.modalContainer, modalStyle, { height: this.animatedHeight }]}>
+                         <View>
+-                            <Text style={[styles.title, this.defaultFont, { color: colorTheme }]}>
++                            <Text style={[styles.title, this.defaultFont, { color: colorTheme}]}>
                                  {popupTitle || title}
                              </Text>
                          </View>
@@ -61,7 +91,7 @@ index 5c94a58..4ae761a 100644
                          {
                              showSearchBox
                                  ? <TextInput
-@@ -175,10 +190,49 @@ class Select2 extends Component {
+@@ -175,10 +190,41 @@ class Select2 extends Component {
                                              toValue: INIT_HEIGHT,
                                              friction: 7
                                          }).start();
@@ -88,32 +118,24 @@ index 5c94a58..4ae761a 100644
 +                                    Enter your custom job
 +                                </Text>
 +                                <View style={styles.line} />
-+                                <TextInput placeholder= 'Type your job' style={styles.inputKeyword1} onChangeText={(text) => {this.setState({title: text})}}>
++                                <TextInput placeholder= 'Enter Your Job' style={styles.inputKeyword1} value={this.state.customInput} onChangeText={(customInput) => this.setState({showed_job:customInput})}>
 +
 +                                </TextInput>
-+                                <View style={{flexDirection: 'row'}}>
++                                <View style={{flexDirection: 'row', width: '97%', justifyContent: 'space-evenly'}}>
 +                                    <Button
-+                                    defaultFont={this.defaultFont}
-+                                    title='Cancel'
-+                                    textColor={colorTheme}
-+                                    backgroundColor='#fff'
-+                                    textStyle={buttonTextStyle}
-+                                    onPress={this.cancelCustomJob}
-+                                    style={[styles.customJobButton, buttonStyle, {borderWidth: 1, borderColor: colorTheme, marginRight: 20}]}/>
-+                                     <Button
 +                                    defaultFont={this.defaultFont}
 +                                    title='Confirm'
 +                                    backgroundColor={colorTheme}
 +                                    textStyle={buttonTextStyle}
 +                                    onPress={this.confirmCustomJob}
-+                                    style={[styles.customJobButton, buttonStyle, {borderWidth: 1, borderColor: colorTheme}]}/>
++                                    style={[styles.customJobButton, buttonStyle, {borderColor: colorTheme}]}/>
 +                                </View>
 +                            </View>
 +                        </Modal>
                          <FlatList
                              style={styles.listOption}
                              data={this.dataRender || []}
-@@ -188,6 +242,7 @@ class Select2 extends Component {
+@@ -188,6 +234,7 @@ class Select2 extends Component {
                          />
  
                          <View style={styles.buttonWrapper}>
@@ -121,45 +143,73 @@ index 5c94a58..4ae761a 100644
                              <Button
                                  defaultFont={this.defaultFont}
                                  onPress={() => {
-@@ -264,24 +319,51 @@ const styles = StyleSheet.create({
-         flexDirection: 'row', alignItems: 'center', borderWidth: 1,
-         borderColor: '#cacaca', paddingVertical: 4
-     },
+@@ -207,7 +254,11 @@ class Select2 extends Component {
+                                         selectedObjectItems.push(item);
+                                     })
+                                     onSelect && onSelect(selectedIds, selectedObjectItems);
+-                                    this.setState({ show: false, keyword: '', preSelectedItem: selectedItem });
++                                    this.setState({ show: false, keyword: '', preSelectedItem: selectedItem});
++                                    const showedjob = selectedItem[0].name
++                                    this.setState({showed_job:showedjob})
++                                    jobName = showed_job
++                                    console.log(jobName)
+                                 }}
+                                 title={selectButtonText}
+                                 backgroundColor={colorTheme}
+@@ -220,7 +271,7 @@ class Select2 extends Component {
+                     preSelectedItem.length > 0
+                         ? (
+                             isSelectSingle
+-                                ? <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle, { color: '#333' }]}>{preSelectedItem[0].name}</Text>
++                                ? <Text style={[styles.selectedTitlte, this.defaultFont, selectedTitleStyle, { color: '#333' }]}>{this.state.showed_job}</Text>
+                                 : <View style={styles.tagWrapper}>
+                                     {
+                                         preSelectedItem.map((tag, index) => {
+@@ -261,27 +312,54 @@ class Select2 extends Component {
+ const styles = StyleSheet.create({
+     container: {
+         width: '100%', minHeight: 45, borderRadius: 2, paddingHorizontal: 16,
+-        flexDirection: 'row', alignItems: 'center', borderWidth: 1,
+-        borderColor: '#cacaca', paddingVertical: 4
++        flexDirection: 'row', alignItems: 'center', paddingVertical: 4, backgroundColor: '#ffffff'
++    },
 +    rowContainer: {
 +        flexDirection:'row'
-+    },
+     },
      modalContainer: {
          paddingTop: 16, backgroundColor: '#fff', borderTopLeftRadius: 8, borderTopRightRadius: 8
      },
 +    customJobModal: {
 +        backgroundColor:'white',
-+        paddingLeft: 22,
-+        paddingRight: 22,
++        paddingLeft: '7%',
++        paddingRight: '7%',
 +        alignItems: 'center',
++        justifyContent: 'center',
 +        borderRadius: 4,
-+        height: 150
++        height: '20%'
 +    },
      title: {
          fontSize: 16, marginBottom: 16, width: '100%', textAlign: 'center'
      },
 +    customJobTitle: {
-+        fontSize: 18, color: '#919191', marginTop: 6
++        fontSize: 18, color: '#000000', marginTop: '15%'
 +    },
      line: {
-         height: 1, width: '100%', backgroundColor: '#cacaca'
-     },
+-        height: 1, width: '100%', backgroundColor: '#cacaca'
++        height: 1, marginTop: 10, width: '100%', backgroundColor: '#cacaca'
++    },
 +    line1: {
 +        height: 1, width: '100%', backgroundColor: '#cacaca',
-+    },
+     },
      inputKeyword: {
 -        height: 40, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
 -        paddingLeft: 8, marginHorizontal: 24, marginTop: 16
-+        height: 40, width: 200, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
-+        paddingLeft: 8, marginLeft: 24, marginTop: 16
++        height: 40, width: '55%', borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
++        paddingLeft: 8, marginLeft: '5%', marginTop: 16
 +    },
 +    inputKeyword1: {
-+        height: 40, width: 230, borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
-+        paddingLeft: 8, marginTop: 15
++        height: 40, width: '97%', borderRadius: 5, borderWidth: 1, borderColor: '#cacaca',
++        paddingLeft: 8, marginTop: 20
      },
      buttonWrapper: {
          marginVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'
@@ -169,10 +219,16 @@ index 5c94a58..4ae761a 100644
 +        height: 36, flex: 2, color: '#328da8'
 +    },
 +    button1: {
-+        color: '#328da8', marginTop: 16, marginLeft: 15
++        color: '#328da8', marginTop: 16, marginLeft: '5%'
 +    },
 +    customJobButton: {
-+        marginTop: 20, width: 130
++        marginTop: '10%', width: '120%'
      },
      selectedTitlte: {
          fontSize: 14, color: 'gray', flex: 1
+@@ -328,3 +406,4 @@ Select2.propTypes = {
+ 
+ //make this component available to the app
+ export default Select2;
++export { jobName };
+\ No newline at end of file
