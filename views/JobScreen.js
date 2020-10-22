@@ -157,10 +157,6 @@ const mockData = [
       backgroundColor: colors.globalBackgroundColor,
     },
 
-    toast: {
-      backgroundColor: '#00C851',
-    },
-
     modalContainer: {
       alignItems: 'center'
     },
