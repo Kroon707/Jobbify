@@ -11,21 +11,23 @@ import {
     Dimensions,
     TextInput,
     TouchableOpacity,
-    Pressable
+    Pressable,
+    TouchableOpacityBase
   } from 'react-native';
 
 import colors from '../sources/colors.js';
-import Button from 'react-native-select-two/lib/Button';
+
 
 
 export default class ChatScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Button 
-                title="back to home"
+                <TouchableOpacity
                 onPress={() => {this.props.navigation.navigate('Home')}}
-                style={styles.button}/>
+                style={styles.button}>
+                <Text>Go back to HomeScreen</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -45,6 +47,6 @@ const styles = StyleSheet.create ({
 
     button: {
         height:40,
-        backgroundColor: 'black',
+        backgroundColor: 'lightblue',
     }
 })

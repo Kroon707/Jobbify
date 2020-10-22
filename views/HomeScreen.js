@@ -68,23 +68,8 @@ export default class HomeScreen extends React.Component {
       this.setState({watchLat: watchLat})
       this.setState({watchLong: watchLong})
     })
-    // Querying all available jobs
-    firebase.database()
-    .ref('/jobs')
-    .orderByKey()
-    .on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        let jobInfo = { 
-          details: childSnapshot.child('details').val(),
-          title: childSnapshot.child('title').val(),
-          latitude: childSnapshot.child('latitude').val(),
-          longitude: childSnapshot.child('longitude').val(),
-          price: childSnapshot.child('price').val()
-        }
-        this.state.jobs.push(jobInfo)
-        this.setState({pushing: false})
-    })
-    })
+    this.queryingJobs()
+    this.refreshMarkers()
   }
     /*
 
@@ -116,11 +101,64 @@ export default class HomeScreen extends React.Component {
   }
   */
 
+  queryingJobs() {
+    this.setState({jobs: []})
+    // Querying all available jobs
+    firebase.database()
+    .ref('/jobs')
+    .orderByKey()
+    .on('value', (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+        let jobInfo = { 
+          details: childSnapshot.child('details').val(),
+          title: childSnapshot.child('title').val(),
+          latitude: childSnapshot.child('latitude').val(),
+          longitude: childSnapshot.child('longitude').val(),
+          price: childSnapshot.child('price').val()
+        }
+        this.state.jobs.push(jobInfo)
+        this.setState({pushing: false})
+    })
+    })
+  }
+
+
+  async renderMarkers() {
+    let markers = [];
+    markers = this.state.jobs.map(jobitem => (
+      <Marker coordinate={{latitude: jobitem.latitude, longitude: jobitem.longitude}}>
+        <Callout>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+              <Icon style={styles.calloutIcon} name={'md-briefcase'} size={30}></Icon>
+              <View style={{marginLeft: 15}}>
+              <Text style={styles.calloutTitle}>{jobitem.title}</Text>
+              <Text style={styles.calloutTimestamp}>18:00:00</Text>
+              </View>
+              <Icon style={styles.calloutForwardIcon} name={'ios-arrow-forward'} size={30}></Icon>
+            </View>
+        </Callout>
+      </Marker>
+    ) 
+    )
+    this.setState({markers})
+  }
+  refreshMarkers() {
+    this.queryingJobs()
+    this.renderMarkers().then(() => {
+      this.forceUpdate();
+    });
+  }
+
   render() {
   //if(this.state.pushing) {return null}
   return (
     <View style={{flex: 1}}>
     <Dropdown onPress={() => {this.props.navigation.openDrawer()}}></Dropdown>
+    <TouchableOpacity
+      onPress={() => {this.refreshMarkers()}}
+      style={styles.refreshButton}>
+      <Text>Refresh Markers</Text>
+    </TouchableOpacity>
     <MapView 
       style={styles.container}
       initialRegion={{
@@ -132,27 +170,11 @@ export default class HomeScreen extends React.Component {
       provider={PROVIDER_GOOGLE}
       showsUserLocation={true}
     >
-    {
-      //Map marker to database jobs
-      this.state.jobs.map(function (jobitem) {
-        return  <Marker coordinate={{latitude: jobitem.latitude, longitude: jobitem.longitude}}>
-                    <Callout>
-                        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                          <Icon style={styles.calloutIcon} name={'md-briefcase'} size={30}></Icon>
-                          <View style={{marginLeft: 15}}>
-                          <Text style={styles.calloutTitle}>{jobitem.title}</Text>
-                          <Text style={styles.calloutTimestamp}>18:00:00</Text>
-                          </View>
-                          <Icon style={styles.calloutForwardIcon} name={'ios-arrow-forward'} size={30}></Icon>
-                        </View>
-                    </Callout>
-                </Marker>
-      })
-    }
+      {this.state.markers}
     </MapView>
     <View style={styles.bottomContainer}>
       <Image style={styles.image} source={require('../assets/images/jobSearch.jpg')}></Image>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.setDatabase()}}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => {this.refreshMarkers()}}>
         <Text style={styles.buttonPlaceholder}>START LOOKING FOR JOBS NEAR YOU</Text>
       </TouchableOpacity>
     </View>
@@ -243,6 +265,19 @@ const styles =  StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     top: '7%',
+    right: '7%',
+    zIndex: 1,
+  },
+
+  refreshButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '14%',
     right: '7%',
     zIndex: 1,
   },
