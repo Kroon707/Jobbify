@@ -45,6 +45,7 @@ import LaunchScreen from './views/LaunchScreen.js';
 import LoginScreen from './views/Login/LoginScreen.js'
 import SetLocationScreen from './views/Login/SetLocationScreen.js'
 import PhoneNumberScreen from './views/Login/PhoneNumberScreen.js'
+import ChatScreen from './views/ChatScreen.js'
 import CustomDrawer from './components/DrawerContent.js'
 
 
@@ -78,6 +79,7 @@ export default function App() {
       <Drawer.Screen component={PendingScreen} name='Pending'></Drawer.Screen>
       <Drawer.Screen component={SettingsScreen} name='Settings'></Drawer.Screen>
       <Drawer.Screen component={ProfileScreen} name='Profile'></Drawer.Screen>
+      <Drawer.Screen component={ChatScreen} name='Chat'></Drawer.Screen>
     </Drawer.Navigator>
   </NavigationContainer>
   </>

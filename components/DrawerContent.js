@@ -67,7 +67,7 @@ class CustomDrawer extends React.Component {
                 <Text style={styles.textRouting}>View your current jobs</Text>
                 </TouchableOpacity>
                 <View style={styles.line}></View>
-                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Profile')}>
+                <TouchableOpacity style={styles.router} onPress={() => this.props.navigation.navigate('Chat')}>
                 <Icon name={'ios-chatboxes'} size={35}></Icon>
                 <Text style={styles.textRouting}>Chat</Text>
                 </TouchableOpacity>
