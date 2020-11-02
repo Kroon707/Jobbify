@@ -28,7 +28,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Emoji from 'react-native-emoji'
 
-import firebase from 'firebase'
+import firebase from 'firebase';
 import initializeDatabase from '../database/FirebaseDatabase.js';
 
 const {width, height} = Dimensions.get('window')
@@ -157,7 +157,7 @@ export default class HomeScreen extends React.Component {
     <TouchableOpacity
       onPress={() => {this.refreshMarkers()}}
       style={styles.refreshButton}>
-      <Text>Refresh Markers</Text>
+      <Icon name={"ios-refresh"} size={32}></Icon>
     </TouchableOpacity>
     <MapView 
       style={styles.container}
@@ -277,9 +277,10 @@ const styles =  StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    top: '14%',
+    top: '16%',
     right: '7%',
     zIndex: 1,
+    shadowOffset: { width: 0, height: 2}, shadowOpacity: 0.2, shadowRadius: 3,
   },
 
   bottomContainer: {
