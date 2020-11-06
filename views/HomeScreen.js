@@ -13,7 +13,6 @@ import {
     TouchableOpacity,
     Settings,
     TouchableHighlight,
-    Modal
   } from 'react-native';
 
 import colors from '../sources/colors.js';
@@ -21,6 +20,7 @@ import padding from '../sources/padding.js'
 import borderRadius from '../sources/borderRadius.js'
 import Dropdown from '../components/Dropdown.js'
 import SettingsChild from '../components/SettingsChild.js'
+import Modal from 'react-native-modal';
 
 import MapView, {PROVIDER_GOOGLE, Marker, Circle, Callout} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -55,6 +55,7 @@ export default class HomeScreen extends React.Component {
     pushing: true,
     watchLat: 0,
     watchLong: 0,
+    show: false,
   };
 
   componentDidMount() {
@@ -68,7 +69,6 @@ export default class HomeScreen extends React.Component {
       this.setState({watchLat: watchLat})
       this.setState({watchLong: watchLong})
     })
-    this.queryingJobs()
     this.refreshMarkers()
   }
     /*
@@ -101,6 +101,10 @@ export default class HomeScreen extends React.Component {
   }
   */
 
+  modalVisible = visible => event => {
+    this.setState({show : visible});
+  }
+
   queryingJobs() {
     this.setState({jobs: []})
     // Querying all available jobs
@@ -127,7 +131,7 @@ export default class HomeScreen extends React.Component {
     let markers = [];
     markers = this.state.jobs.map(jobitem => (
       <Marker coordinate={{latitude: jobitem.latitude, longitude: jobitem.longitude}}>
-        <Callout>
+        <Callout onPress={this.modalVisible(true)}>
             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               <Icon style={styles.calloutIcon} name={'md-briefcase'} size={30}></Icon>
               <View style={{marginLeft: 15}}>
@@ -178,6 +182,15 @@ export default class HomeScreen extends React.Component {
         <Text style={styles.buttonPlaceholder}>START LOOKING FOR JOBS NEAR YOU</Text>
       </TouchableOpacity>
     </View>
+    <Modal 
+    onBackdropPress={() => this.closeModal}
+    isVisible={this.state.show}
+    transparent={true}
+    style={{justifyContent: 'flex-end', margin: 0}}>
+      <View style={styles.jobInfoModal}>
+        <Text style={styles.modalTitle}>Job Title</Text>
+      </View>
+    </Modal>
     </View>
   )
   }
@@ -256,6 +269,12 @@ const styles =  StyleSheet.create({
     marginRight: 15,
   },
 
+  jobInfoModal: {
+    backgroundColor: 'white',
+    height: '40%',
+    width: '100%',
+  },
+
   dropdownMenu: {
     width: 60,
     height: 60,
@@ -285,7 +304,7 @@ const styles =  StyleSheet.create({
 
   bottomContainer: {
     width: '100%',
-    height: 320,
+    height: '35%',
     backgroundColor: colors.white,
     position: 'absolute',
     bottom: 0,
@@ -320,6 +339,10 @@ const styles =  StyleSheet.create({
 
   calloutTitle: {
     fontSize: 18,
+  },
+
+  modalTitle: {
+    fontSize: 30,
   },
 
   calloutTimestamp: {
